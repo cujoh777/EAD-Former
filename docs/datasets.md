@@ -102,9 +102,9 @@ changed-pixel statistics used in the manuscript are:
 
 These are the patch-level statistics of the protocol used in this study. They
 should not be interpreted as new dataset releases or as replacements for the
-official dataset descriptions. Because this repository is an
-architecture-only release, it does not publish the preprocessing procedure or
-the split manifests required to reproduce these exact partitions.
+official dataset descriptions. This limited public release does not publish
+the preprocessing procedure or the split manifests required to reproduce these
+exact partitions.
 
 The changed-pixel ratios show that the three benchmarks have different levels
 of class imbalance. LEVIR-CD and WHU-CD are strongly dominated by unchanged
@@ -140,7 +140,7 @@ The following text can be used in the manuscript:
 > https://justchenhao.github.io/LEVIR/,
 > https://gpcv.whu.edu.cn/data/building_dataset.html, and
 > https://github.com/liumency/SYSU-CD, respectively. No new remote sensing
-> image dataset was generated. An architecture-only implementation of
+> image dataset was generated. A limited public implementation of
 > SwinEADFormer is available at https://github.com/cujoh777/EAD-Former. The
-> repository does not redistribute the datasets or provide the training and
-> evaluation pipelines.
+> repository does not redistribute the datasets or provide a complete
+> executable training and evaluation pipeline.

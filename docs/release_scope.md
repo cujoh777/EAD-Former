@@ -11,20 +11,23 @@
 - multi-scale decoder
 - architecture documentation
 - architecture metadata
+- sanitized training and evaluation entry-point references
 
 ## Not included
 
 - implementations or reimplementations of competing methods
 - dataset downloading or preprocessing
-- training, validation, and evaluation pipelines
-- loss implementation
+- dataset split manifests
+- the internal dataset loader, boundary metrics, and utility package referenced
+  by the public entry-point files
+- a complete executable training, validation, and evaluation pipeline
 - internal experiment scheduling
-- ablation switches
 - environment installation files
 - pretrained weights and checkpoints
 - logs and numerical result files
 - visualization and paper-generation scripts
 - manuscript and submission materials
 
-This repository is an architecture-only release. It is not an end-to-end
-reproducibility package.
+This repository is a limited public release. The entry-point files document
+selected interfaces but are not standalone. The repository is not an
+end-to-end reproducibility package.

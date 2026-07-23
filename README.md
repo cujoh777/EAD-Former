@@ -1,12 +1,14 @@
 # EAD-Former
 
-This repository provides an architecture-only implementation of
+This repository provides a limited public implementation of
 **SwinEADFormer**, an edge-aware dynamic Swin Transformer designed for binary
 building change detection in high-resolution remote sensing images.
 
-The current release focuses exclusively on the proposed model architecture. It
-does not include competing methods, training pipelines, evaluation scripts,
-experiment configurations, pretrained weights, or dataset redistribution.
+The release contains the proposed architecture and sanitized training and
+evaluation entry-point references. It does not include competing-method
+implementations, the internal dataset and utility package, environment files,
+pretrained weights, or dataset redistribution. It is therefore not a
+standalone executable reproduction package.
 
 ![SwinEADFormer architecture overview](assets/architecture_overview.svg)
 
@@ -230,8 +232,9 @@ The model returns a dictionary containing:
 | `edge` | Resized soft router map |
 | `sparsity_loss` | Mean router activation used for regularization |
 
-The repository does not provide the loss implementation or the training and
-evaluation procedures required to reproduce the reported experiments.
+The public entry-point files expose the main optimization and metric interfaces,
+but the repository does not provide all internal modules and artifacts required
+to reproduce the reported experiments.
 
 ## Repository Structure
 
@@ -240,6 +243,8 @@ EAD-Former/
 ├── README.md
 ├── MODEL_CARD.md
 ├── .gitignore
+├── train.py
+├── test.py
 ├── assets/
 │   └── architecture_overview.svg
 ├── configs/
@@ -261,6 +266,9 @@ EAD-Former/
 
 - `models/swin_eadformer.py` defines the complete SwinEADFormer data flow.
 - `models/modules/` separates the router, interaction, and decoder components.
+- `train.py` and `test.py` are sanitized reference entry points. They require
+  explicit data paths and depend on internal support modules that are not part
+  of this release.
 - `configs/architecture.yaml` records architecture metadata only. It is not a
   training configuration.
 - `docs/` explains the architecture, design principles, and release boundary.
@@ -278,23 +286,24 @@ EAD-Former/
 
 ## Release Scope
 
-This architecture-only release includes:
+This limited public release includes:
 
 - the full SwinEADFormer model definition;
 - the edge-region-semantic router;
 - router-gated cross-temporal attention;
 - bidirectional EAD interaction;
 - Phi fusion;
-- the multi-scale decoder.
+- the multi-scale decoder;
+- sanitized training and evaluation entry-point references.
 
 It intentionally excludes:
 
 - implementations or reimplementations of competing methods;
-- dataset downloading and preprocessing;
-- training and validation pipelines;
-- evaluation and visualization scripts;
-- loss functions and experiment scheduling;
-- ablation switches;
+- the internal dataset loader, boundary metrics, and utility package referenced
+  by the entry-point files;
+- dataset downloading, preprocessing, and split manifests;
+- a complete executable training and evaluation pipeline;
+- internal experiment scheduling and visualization scripts;
 - environment configuration;
 - pretrained weights and checkpoints;
 - logs, numerical result files, and manuscript materials.
@@ -320,8 +329,9 @@ protocol used in the study are documented in
 ## Current Status
 
 This repository accompanies a manuscript under the publication process. The
-code currently represents the full model configuration described in the
-manuscript.
+model code represents the full SwinEADFormer configuration described in the
+manuscript. The public entry-point files document selected training and
+evaluation interfaces but do not form a complete runtime package.
 
 Repository contents and citation information may be updated after completion of
 the publication process.
