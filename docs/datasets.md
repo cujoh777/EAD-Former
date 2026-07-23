@@ -102,10 +102,11 @@ changed-pixel statistics used in the manuscript are:
 
 These are the patch-level statistics of the protocol used in this study. They
 should not be interpreted as new dataset releases or as replacements for the
-official dataset descriptions. This repository provides the model, dataset
-loader, training and evaluation entry points, loss functions, and metric
-implementations. It does not redistribute the original datasets, derived image
-patches, or dataset split manifests.
+official dataset descriptions. This repository provides the model
+implementation, prepared-patch dataset loader, training and evaluation entry
+points, loss functions, and metric implementations. It does not provide
+dataset downloading or preprocessing code, derived image patches, or the split
+manifests used to construct the exact experimental partitions.
 
 The changed-pixel ratios show that the three benchmarks have different levels
 of class imbalance. LEVIR-CD and WHU-CD are strongly dominated by unchanged
