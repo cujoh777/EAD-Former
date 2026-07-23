@@ -36,7 +36,9 @@ two acquisition times. The study configuration uses 256 by 256 image patches.
 ## Evaluation scope reported in the manuscript
 
 The manuscript evaluates the method on LEVIR-CD, WHU-CD, and SYSU-CD. The
-datasets are not redistributed in this repository.
+datasets are not redistributed in this repository. Dataset characteristics,
+official sources, citations, and the study protocol are recorded in
+[the dataset documentation](docs/datasets.md).
 
 ## Limitations
 

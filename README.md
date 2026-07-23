@@ -246,6 +246,7 @@ EAD-Former/
 │   └── architecture.yaml
 ├── docs/
 │   ├── architecture.md
+│   ├── datasets.md
 │   ├── design_principles.md
 │   └── release_scope.md
 └── models/
@@ -270,6 +271,7 @@ EAD-Former/
 ## Documentation
 
 - [Architecture](docs/architecture.md)
+- [Datasets and study protocol](docs/datasets.md)
 - [Design principles](docs/design_principles.md)
 - [Public release scope](docs/release_scope.md)
 - [Model card](MODEL_CARD.md)
@@ -311,6 +313,9 @@ including:
 
 No new remote sensing image dataset was generated. The datasets remain available
 from their original providers and are not redistributed in this repository.
+Official sources, dataset characteristics, citations, and the patch-level
+protocol used in the study are documented in
+[Datasets and study protocol](docs/datasets.md).
 
 ## Current Status
 
