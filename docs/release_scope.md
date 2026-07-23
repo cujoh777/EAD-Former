@@ -11,7 +11,11 @@
 - multi-scale decoder
 - architecture documentation
 - architecture metadata
-- sanitized training and evaluation entry-point references
+- dataset loader
+- loss and metric utilities
+- boundary metrics
+- training and evaluation entry points
+- Python dependency list
 
 ## Not included
 
@@ -19,16 +23,8 @@
   maintained by their original authors
 - dataset downloading or preprocessing
 - dataset split manifests
-- the internal dataset loader, boundary metrics, and utility package referenced
-  by the public entry-point files
-- a complete executable training, validation, and evaluation pipeline
 - internal experiment scheduling
-- environment installation files
 - pretrained weights and checkpoints
 - logs and numerical result files
 - visualization and paper-generation scripts
 - manuscript and submission materials
-
-This repository is a limited public release. The entry-point files document
-selected interfaces but are not standalone. The repository is not an
-end-to-end reproducibility package.

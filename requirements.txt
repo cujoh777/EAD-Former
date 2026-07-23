@@ -1,0 +1,7 @@
+numpy
+Pillow
+timm
+torch
+torchvision
+tqdm
+

@@ -13,8 +13,15 @@ class DynamicEdgeRouter(nn.Module):
         in_channels: int,
         context_channels: int,
         init_bias: float = -1.0,
+        enabled_cues: str = "ers",
     ):
         super().__init__()
+        enabled_cues = "".join(sorted(set(enabled_cues)))
+        if not enabled_cues or any(cue not in set("ers") for cue in enabled_cues):
+            raise ValueError(
+                "enabled_cues must be a non-empty subset of 'ers'"
+            )
+        self.enabled_cues = enabled_cues
         self.norm = nn.GroupNorm(8, in_channels)
         self.to_gray = nn.Conv2d(in_channels, 1, kernel_size=1, bias=False)
 
@@ -79,6 +86,12 @@ class DynamicEdgeRouter(nn.Module):
         edge_logit = 2.0 * magnitude - 1.0
         region_logit = self.region_proj(diff_feat)
         semantic_logit = self.semantic_proj(context_feat)
+        if "e" not in self.enabled_cues:
+            edge_logit = torch.zeros_like(edge_logit)
+        if "r" not in self.enabled_cues:
+            region_logit = torch.zeros_like(region_logit)
+        if "s" not in self.enabled_cues:
+            semantic_logit = torch.zeros_like(semantic_logit)
         router = torch.sigmoid(
             edge_logit + region_logit + semantic_logit + self.router_bias
         )

@@ -47,12 +47,12 @@ official sources, citations, and the study protocol are recorded in
   cross-sensor image pairs.
 - The router provides soft response modulation and does not reduce attention
   FLOPs.
-- The public training and evaluation entry points depend on internal support
-  modules and are not a complete executable pipeline.
+- The repository does not provide datasets, split manifests, or pretrained
+  checkpoints.
 - No formal theoretical guarantee is claimed for the routing mechanism.
 
 ## Release status
 
-This is a limited public release associated with a manuscript in the
-publication process. It includes the proposed architecture and sanitized
-training and evaluation entry-point references.
+This public release is associated with a manuscript in the publication
+process. It includes the proposed architecture and the supporting training and
+evaluation modules.

@@ -14,12 +14,18 @@ class RouterGatedCrossAttention(nn.Module):
         num_heads: int = 8,
         attn_drop: float = 0.0,
         proj_drop: float = 0.0,
+        gate_position: str = "after",
     ):
         super().__init__()
         if dim % num_heads != 0:
             raise ValueError("dim must be divisible by num_heads")
+        if gate_position not in {"before", "after"}:
+            raise ValueError(
+                "gate_position must be either 'before' or 'after'"
+            )
 
         self.num_heads = num_heads
+        self.gate_position = gate_position
         self.q = nn.Linear(dim, dim)
         self.kv = nn.Linear(dim, dim * 2)
         self.proj = nn.Linear(dim, dim)
@@ -38,6 +44,9 @@ class RouterGatedCrossAttention(nn.Module):
         query_tokens = query_feat.flatten(2).transpose(1, 2)
         reference_tokens = reference_feat.flatten(2).transpose(1, 2)
         spatial_gate = router.flatten(2).transpose(1, 2)
+        if self.gate_position == "before":
+            query_tokens = query_tokens * spatial_gate
+            reference_tokens = reference_tokens * spatial_gate
 
         query = self.q(query_tokens)
         key, value = self.kv(reference_tokens).chunk(2, dim=-1)
@@ -62,19 +71,23 @@ class RouterGatedCrossAttention(nn.Module):
         )
         output = output.transpose(1, 2).reshape(batch, num_tokens, channels)
         output = self.proj_drop(self.proj(output))
-        output = output * spatial_gate
+        if self.gate_position == "after":
+            output = output * spatial_gate
         return output.transpose(1, 2).view(batch, channels, height, width)
 
 
 class EADBlock(nn.Module):
     """Edge-aware dynamic cross-temporal interaction block."""
 
-    def __init__(self, dim: int):
+    def __init__(self, dim: int, gate_position: str = "after"):
         super().__init__()
         self.norm_query = nn.GroupNorm(8, dim)
         self.norm_reference = nn.GroupNorm(8, dim)
         self.norm_mlp = nn.GroupNorm(8, dim)
-        self.attention = RouterGatedCrossAttention(dim)
+        self.attention = RouterGatedCrossAttention(
+            dim,
+            gate_position=gate_position,
+        )
         self.mlp = nn.Sequential(
             nn.Conv2d(dim, dim * 4, 1),
             nn.GELU(),

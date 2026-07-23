@@ -106,7 +106,7 @@ def main():
     parser.add_argument(
         "--boundary_mode",
         choices=["inner", "symmetric"],
-        default="inner",
+        default="symmetric",
     )
     parser.add_argument("--save_metrics_csv", default="")
     parser.add_argument("--no_symmetric", action="store_true")

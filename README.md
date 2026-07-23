@@ -1,14 +1,13 @@
 # EAD-Former
 
-This repository provides a limited public implementation of
+This repository provides the public implementation of
 **SwinEADFormer**, an edge-aware dynamic Swin Transformer designed for binary
 building change detection in high-resolution remote sensing images.
 
-The release contains the proposed architecture and sanitized training and
-evaluation entry-point references. It does not redistribute baseline
-implementations, the internal dataset and utility package, environment files,
-pretrained weights, or datasets. It is therefore not a standalone executable
-reproduction package.
+The release contains the proposed architecture, dataset loader, loss and metric
+utilities, boundary metrics, and training and evaluation entry points. It does
+not redistribute baseline implementations, pretrained checkpoints, or
+datasets.
 
 ![SwinEADFormer architecture overview](assets/architecture_overview.svg)
 
@@ -232,9 +231,7 @@ The model returns a dictionary containing:
 | `edge` | Resized soft router map |
 | `sparsity_loss` | Mean router activation used for regularization |
 
-The public entry-point files expose the main optimization and metric interfaces,
-but the repository does not provide all internal modules and artifacts required
-to reproduce the reported experiments.
+The training and evaluation entry points use the public modules under `core/`.
 
 ## Repository Structure
 
@@ -243,8 +240,17 @@ EAD-Former/
 ├── README.md
 ├── MODEL_CARD.md
 ├── .gitignore
+├── requirements.txt
 ├── train.py
 ├── test.py
+├── core/
+│   ├── __init__.py
+│   ├── datasets.py
+│   ├── utils.py
+│   ├── boundary_metrics.py
+│   └── models/
+│       ├── __init__.py
+│       └── swin_eadformer.py
 ├── assets/
 │   └── architecture_overview.svg
 ├── configs/
@@ -266,9 +272,14 @@ EAD-Former/
 
 - `models/swin_eadformer.py` defines the complete SwinEADFormer data flow.
 - `models/modules/` separates the router, interaction, and decoder components.
-- `train.py` and `test.py` are sanitized reference entry points. They require
-  explicit data paths and depend on internal support modules that are not part
-  of this release.
+- `core/datasets.py` provides the prepared bitemporal patch loader.
+- `core/utils.py` provides seeding, loss, mask, and metric utilities.
+- `core/boundary_metrics.py` provides boundary-based evaluation metrics.
+- `core/models/` exposes only SwinEADFormer to the entry points.
+- `train.py` and `test.py` provide the public training and evaluation entry
+  points. Dataset paths must be supplied explicitly.
+- `requirements.txt` lists the Python package dependencies used by the public
+  code.
 - `configs/architecture.yaml` records architecture metadata only. It is not a
   training configuration.
 - `docs/` explains the architecture, design principles, and release boundary.
@@ -292,9 +303,22 @@ follow the corresponding license, environment, configuration, and citation
 instructions. This repository does not provide modified or reimplemented
 copies of competing methods.
 
+## Installation
+
+Install the Python dependencies with:
+
+```bash
+pip install -r requirements.txt
+```
+
+The repository does not include datasets or pretrained checkpoints. Prepare a
+dataset root with `train`, `val`, and `test` splits. Each split must contain
+corresponding `A`, `B`, and `label` directories, as documented in
+[`core/datasets.py`](core/datasets.py).
+
 ## Release Scope
 
-This limited public release includes:
+This public release includes:
 
 - the full SwinEADFormer model definition;
 - the edge-region-semantic router;
@@ -302,23 +326,18 @@ This limited public release includes:
 - bidirectional EAD interaction;
 - Phi fusion;
 - the multi-scale decoder;
-- sanitized training and evaluation entry-point references.
+- the dataset loader, loss and metric utilities, and boundary metrics;
+- training and evaluation entry points;
+- the dependency list.
 
 It intentionally excludes:
 
 - baseline implementations, which should be obtained from the official
   repositories maintained by their original authors;
-- the internal dataset loader, boundary metrics, and utility package referenced
-  by the entry-point files;
 - dataset downloading, preprocessing, and split manifests;
-- a complete executable training and evaluation pipeline;
 - internal experiment scheduling and visualization scripts;
-- environment configuration;
 - pretrained weights and checkpoints;
 - logs, numerical result files, and manuscript materials.
-
-Therefore, this repository should not be interpreted as an end-to-end
-reproducibility package.
 
 ## Data Availability
 
@@ -339,8 +358,8 @@ protocol used in the study are documented in
 
 This repository accompanies a manuscript under the publication process. The
 model code represents the full SwinEADFormer configuration described in the
-manuscript. The public entry-point files document selected training and
-evaluation interfaces but do not form a complete runtime package.
+manuscript. The public entry points use the dataset, loss, metric, and model
+interfaces provided in this repository.
 
 Repository contents and citation information may be updated after completion of
 the publication process.

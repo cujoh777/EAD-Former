@@ -1,4 +1,4 @@
-"""Architecture-only implementation of the full SwinEADFormer model."""
+"""Canonical implementation of the SwinEADFormer model."""
 
 import timm
 import torch
@@ -11,8 +11,25 @@ from .modules import DecoderBlock, DynamicEdgeRouter, EADBlock
 class SwinEADFormer(nn.Module):
     """SwinEADFormer for binary building change detection."""
 
-    def __init__(self, pretrained: bool = True):
+    def __init__(
+        self,
+        pretrained: bool = True,
+        symmetric: bool = True,
+        router_mode: str = "ead",
+        router_cues: str = "ers",
+        fusion_mode: str = "phi",
+        gate_position: str = "after",
+    ):
         super().__init__()
+        if router_mode not in {"ead", "none"}:
+            raise ValueError(f"Unknown router_mode: {router_mode}")
+        if fusion_mode not in {"phi", "interaction_only"}:
+            raise ValueError(f"Unknown fusion_mode: {fusion_mode}")
+
+        self.symmetric = symmetric
+        self.router_mode = router_mode
+        self.fusion_mode = fusion_mode
+
         self.backbone = timm.create_model(
             "swin_tiny_patch4_window7_224",
             pretrained=pretrained,
@@ -27,15 +44,22 @@ class SwinEADFormer(nn.Module):
             nn.ReLU(inplace=True),
         )
 
-        self.router = DynamicEdgeRouter(384, 768)
-        self.ead_block_1 = EADBlock(384)
-        self.ead_block_2 = EADBlock(384)
-
-        self.phi_fusion = nn.Sequential(
-            nn.Conv2d(384 * 3, 384, 1),
-            nn.GroupNorm(8, 384),
-            nn.ReLU(inplace=True),
+        self.router = DynamicEdgeRouter(
+            384,
+            768,
+            enabled_cues=router_cues,
         )
+        self.ead_block_1 = EADBlock(384, gate_position=gate_position)
+        self.ead_block_2 = EADBlock(384, gate_position=gate_position)
+
+        if symmetric and fusion_mode == "phi":
+            self.phi_fusion = nn.Sequential(
+                nn.Conv2d(384 * 3, 384, 1),
+                nn.GroupNorm(8, 384),
+                nn.ReLU(inplace=True),
+            )
+        else:
+            self.phi_fusion = nn.Identity()
 
         self.decoder_s2 = DecoderBlock(384, 192, 192)
         self.decoder_s1 = DecoderBlock(192, 96, 96)
@@ -74,26 +98,42 @@ class SwinEADFormer(nn.Module):
             )
         )
 
-        semantic_difference = torch.abs(t1_s4 - t2_s4)
-        router, sparsity_loss = self.router(
-            learned_difference,
-            semantic_difference,
-        )
+        if self.router_mode == "ead":
+            semantic_difference = torch.abs(t1_s4 - t2_s4)
+            router, sparsity_loss = self.router(
+                learned_difference,
+                semantic_difference,
+            )
+        else:
+            router = learned_difference.new_ones(
+                (
+                    learned_difference.shape[0],
+                    1,
+                    learned_difference.shape[2],
+                    learned_difference.shape[3],
+                )
+            )
+            sparsity_loss = learned_difference.new_tensor(0.0)
 
         output_12 = self.interact(t1_s3, t2_s3, router)
-        output_21 = self.interact(t2_s3, t1_s3, router)
-        interaction_difference = torch.abs(output_12 - output_21)
-
-        fused_change = self.phi_fusion(
-            torch.cat(
-                [
-                    interaction_difference,
-                    learned_difference,
-                    torch.abs(t1_s3 - t2_s3),
-                ],
-                dim=1,
-            )
-        )
+        if self.symmetric:
+            output_21 = self.interact(t2_s3, t1_s3, router)
+            interaction_difference = torch.abs(output_12 - output_21)
+            if self.fusion_mode == "phi":
+                fused_change = self.phi_fusion(
+                    torch.cat(
+                        [
+                            interaction_difference,
+                            learned_difference,
+                            torch.abs(t1_s3 - t2_s3),
+                        ],
+                        dim=1,
+                    )
+                )
+            else:
+                fused_change = interaction_difference
+        else:
+            fused_change = output_12
 
         auxiliary_logits = self.aux_head(fused_change)
         decoded_s2 = self.decoder_s2(
