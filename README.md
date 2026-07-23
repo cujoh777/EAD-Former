@@ -6,8 +6,8 @@ building change detection in high-resolution remote sensing images.
 
 The release contains the proposed architecture, dataset loader, loss and metric
 utilities, boundary metrics, and training and evaluation entry points. It does
-not redistribute baseline implementations, pretrained checkpoints, or
-datasets.
+not redistribute baseline implementations, the trained model checkpoints used
+in the manuscript, or datasets.
 
 ![SwinEADFormer architecture overview](assets/architecture_overview.svg)
 
@@ -311,8 +311,8 @@ Install the Python dependencies with:
 pip install -r requirements.txt
 ```
 
-The repository does not include datasets or pretrained checkpoints. Prepare a
-dataset root with `train`, `val`, and `test` splits. Each split must contain
+The repository does not include datasets or trained model checkpoints. Prepare
+a dataset root with `train`, `val`, and `test` splits. Each split must contain
 corresponding `A`, `B`, and `label` directories, as documented in
 [`core/datasets.py`](core/datasets.py).
 
@@ -336,8 +336,15 @@ It intentionally excludes:
   repositories maintained by their original authors;
 - dataset downloading, preprocessing, and split manifests;
 - internal experiment scheduling and visualization scripts;
-- pretrained weights and checkpoints;
+- the trained model checkpoints used in the manuscript;
 - logs, numerical result files, and manuscript materials.
+
+## Checkpoints
+
+The training and evaluation code is publicly available in this repository.
+The current release does not include the trained model checkpoints.
+The trained model checkpoints used in the manuscript will be added to the
+same repository upon acceptance of the manuscript.
 
 ## Data Availability
 
