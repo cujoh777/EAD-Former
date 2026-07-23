@@ -13,20 +13,7 @@ from torch.utils.data import DataLoader
 from torch.amp import autocast, GradScaler
 
 from core.datasets import LEVIRCD_Dataset
-from core.models import (
-    SwinEADFormer,
-    FCEF,
-    FCSiamConc,
-    FCSiamDiff,
-    BIT_Mini,
-    ChangeFormerV6,
-    SNUNetCD,
-    FCCDN,
-    Changer,
-    ChangeMamba,
-    EdgeCVT,
-    CDMamba,
-)
+from core.models import SwinEADFormer
 from core.utils import (
     set_seed,
     seed_worker,
@@ -500,7 +487,6 @@ def get_parameter_groups(model, base_lr, weight_decay):
 # Build model
 # =====================================================
 def build_model(
-    model_name,
     device,
     symmetric=True,
     router_mode="ead",
@@ -508,38 +494,13 @@ def build_model(
     fusion_mode="phi",
     gate_position="after",
 ):
-    if model_name == "FCEF":
-        model = FCEF()
-    elif model_name == "FCSiamConc":
-        model = FCSiamConc()
-    elif model_name == "FCSiamDiff":
-        model = FCSiamDiff()
-    elif model_name == "BIT":
-        model = BIT_Mini()
-    elif model_name == "ChangeFormer":
-        model = ChangeFormerV6()
-    elif model_name in {"SNUNet_CD", "SNUNetCD"}:
-        model = SNUNetCD()
-    elif model_name == "FCCDN":
-        model = FCCDN()
-    elif model_name == "Changer":
-        model = Changer()
-    elif model_name == "ChangeMamba":
-        model = ChangeMamba()
-    elif model_name == "EdgeCVT":
-        model = EdgeCVT()
-    elif model_name == "CDMamba":
-        model = CDMamba()
-    elif model_name == "SwinEADFormer":
-        model = SwinEADFormer(
-            symmetric=symmetric,
-            router_mode=router_mode,
-            router_cues=router_cues,
-            fusion_mode=fusion_mode,
-            gate_position=gate_position,
-        )
-    else:
-        raise ValueError(f"Unknown model name: {model_name}")
+    model = SwinEADFormer(
+        symmetric=symmetric,
+        router_mode=router_mode,
+        router_cues=router_cues,
+        fusion_mode=fusion_mode,
+        gate_position=gate_position,
+    )
 
     return model.to(device)
 
@@ -553,21 +514,8 @@ def main():
     parser.add_argument(
         "--model",
         default="SwinEADFormer",
-        choices=[
-            "SwinEADFormer",
-            "FCEF",
-            "FCSiamConc",
-            "FCSiamDiff",
-            "BIT",
-            "ChangeFormer",
-            "SNUNet_CD",
-            "SNUNetCD",
-            "FCCDN",
-            "Changer",
-            "ChangeMamba",
-            "EdgeCVT",
-            "CDMamba",
-        ]
+        choices=["SwinEADFormer"],
+        help="This public entry point supports only the proposed method."
     )
 
     parser.add_argument(
@@ -801,7 +749,6 @@ def main():
     print("=" * 60)
 
     model = build_model(
-        args.model,
         device,
         symmetric=not args.no_symmetric,
         router_mode=args.router_mode,

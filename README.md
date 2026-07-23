@@ -5,10 +5,10 @@ This repository provides a limited public implementation of
 building change detection in high-resolution remote sensing images.
 
 The release contains the proposed architecture and sanitized training and
-evaluation entry-point references. It does not include competing-method
+evaluation entry-point references. It does not redistribute baseline
 implementations, the internal dataset and utility package, environment files,
-pretrained weights, or dataset redistribution. It is therefore not a
-standalone executable reproduction package.
+pretrained weights, or datasets. It is therefore not a standalone executable
+reproduction package.
 
 ![SwinEADFormer architecture overview](assets/architecture_overview.svg)
 
@@ -284,6 +284,14 @@ EAD-Former/
 - [Public release scope](docs/release_scope.md)
 - [Model card](MODEL_CARD.md)
 
+## Baseline Implementations
+
+Baseline implementations are not included in this repository. Obtain each
+baseline from the official repository maintained by its original authors and
+follow the corresponding license, environment, configuration, and citation
+instructions. This repository does not provide modified or reimplemented
+copies of competing methods.
+
 ## Release Scope
 
 This limited public release includes:
@@ -298,7 +306,8 @@ This limited public release includes:
 
 It intentionally excludes:
 
-- implementations or reimplementations of competing methods;
+- baseline implementations, which should be obtained from the official
+  repositories maintained by their original authors;
 - the internal dataset loader, boundary metrics, and utility package referenced
   by the entry-point files;
 - dataset downloading, preprocessing, and split manifests;

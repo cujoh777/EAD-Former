@@ -15,7 +15,8 @@
 
 ## Not included
 
-- implementations or reimplementations of competing methods
+- baseline implementations; obtain them from the official repositories
+  maintained by their original authors
 - dataset downloading or preprocessing
 - dataset split manifests
 - the internal dataset loader, boundary metrics, and utility package referenced

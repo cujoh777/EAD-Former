@@ -6,61 +6,19 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from core import models as model_zoo
-from core.models import SwinEADFormer, FCEF, FCSiamConc, FCSiamDiff, BIT_Mini, ChangeFormerV6
+from core.models import SwinEADFormer
 from core.boundary_metrics import BoundaryMetricTracker
 from core.datasets import LEVIRCD_Dataset
 from core.utils import MetricsTracker, prepare_mask, seed_worker
 
 
 def build_model(
-    name,
     symmetric=True,
     router_mode="ead",
     router_cues="ers",
     fusion_mode="phi",
     gate_position="after",
 ):
-    if name == "FCEF":
-        return FCEF()
-    if name == "FCSiamConc":
-        return FCSiamConc()
-    if name == "FCSiamDiff":
-        return FCSiamDiff()
-    if name == "BIT":
-        return BIT_Mini()
-    if name == "ChangeFormer":
-        return ChangeFormerV6()
-    if name in {"SNUNet_CD", "SNUNetCD"}:
-        cls = getattr(model_zoo, "SNUNetCD", None)
-        if cls is None:
-            raise ValueError("SNUNetCD is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
-    if name == "FCCDN":
-        cls = getattr(model_zoo, "FCCDN", None)
-        if cls is None:
-            raise ValueError("FCCDN is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
-    if name == "Changer":
-        cls = getattr(model_zoo, "Changer", None)
-        if cls is None:
-            raise ValueError("Changer is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
-    if name == "ChangeMamba":
-        cls = getattr(model_zoo, "ChangeMamba", None)
-        if cls is None:
-            raise ValueError("ChangeMamba is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
-    if name == "EdgeCVT":
-        cls = getattr(model_zoo, "EdgeCVT", None)
-        if cls is None:
-            raise ValueError("EdgeCVT is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
-    if name == "CDMamba":
-        cls = getattr(model_zoo, "CDMamba", None)
-        if cls is None:
-            raise ValueError("CDMamba is not registered in core.models. Upload the updated core/models.py first.")
-        return cls()
     return SwinEADFormer(
         symmetric=symmetric,
         router_mode=router_mode,
@@ -131,21 +89,8 @@ def main():
     parser.add_argument(
         "--model",
         default="SwinEADFormer",
-        choices=[
-            "SwinEADFormer",
-            "FCEF",
-            "FCSiamConc",
-            "FCSiamDiff",
-            "BIT",
-            "ChangeFormer",
-            "SNUNet_CD",
-            "SNUNetCD",
-            "FCCDN",
-            "Changer",
-            "ChangeMamba",
-            "EdgeCVT",
-            "CDMamba",
-        ]
+        choices=["SwinEADFormer"],
+        help="This public entry point supports only the proposed method."
     )
     parser.add_argument(
         "--data-dir",
@@ -196,7 +141,6 @@ def main():
         f"fusion={fusion_mode}, gate_position={gate_position}"
     )
     model = build_model(
-        args.model,
         symmetric=symmetric,
         router_mode=router_mode,
         router_cues=router_cues,
