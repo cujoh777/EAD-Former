@@ -142,12 +142,12 @@ are usually sparse in building change detection datasets.
 
 ### 4. Router-gated cross-temporal interaction
 
-The router is applied to the output of cross-temporal attention before residual
+The router is applied to the cross-temporal attention output before residual
 addition:
 
 $$
-\widetilde{X}
-=
+X' =
+X +
 \operatorname{Attn}
 \left(
 \operatorname{GN}(X),
