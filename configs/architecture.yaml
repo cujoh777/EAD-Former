@@ -1,0 +1,57 @@
+model:
+  name: SwinEADFormer
+  task: binary_building_change_detection
+  release_type: architecture_only
+
+input:
+  temporal_images: 2
+  channels_per_image: 3
+  reference_spatial_size: [256, 256]
+
+encoder:
+  family: Swin-Tiny
+  shared_weights: true
+  output_stages: [1, 2, 3, 4]
+  stage_channels: [96, 192, 384, 768]
+
+difference_representation:
+  interaction_stage: 3
+  features:
+    - temporal_feature_t1
+    - temporal_feature_t2
+    - absolute_difference
+    - elementwise_product
+  output_channels: 384
+
+router:
+  cues: [edge, region, semantic]
+  output_channels: 1
+  initial_bias: -1.0
+  gate_position: attention_output
+
+interaction:
+  directions: [t1_to_t2, t2_to_t1]
+  blocks_per_direction: 2
+  attention_heads: 8
+  discrepancy: absolute_directional_difference
+
+fusion:
+  name: Phi
+  evidence:
+    - directional_interaction_discrepancy
+    - learned_s3_difference
+    - direct_s3_absolute_difference
+  output_channels: 384
+
+decoder:
+  skip_stages: [2, 1]
+  channels: [192, 96]
+  output_channels: 1
+
+release_excludes:
+  - training_pipeline
+  - evaluation_pipeline
+  - dataset_preprocessing
+  - experiment_configuration
+  - pretrained_weights
+  - competing_methods

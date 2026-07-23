@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="430" viewBox="0 0 1440 430">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#465568"/>
+    </marker>
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #17324d; }
+      .label { font: 600 17px Arial, sans-serif; fill: #17324d; }
+      .small { font: 14px Arial, sans-serif; fill: #465568; }
+      .box { stroke: #2f5f87; stroke-width: 2; rx: 14; ry: 14; }
+      .line { stroke: #465568; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1440" height="430" fill="#ffffff"/>
+  <text x="720" y="38" text-anchor="middle" class="title">SwinEADFormer Architecture Overview</text>
+
+  <rect x="35" y="105" width="120" height="70" class="box" fill="#eaf4fb"/>
+  <text x="95" y="135" text-anchor="middle" class="label">Image T1</text>
+  <text x="95" y="158" text-anchor="middle" class="small">RGB</text>
+
+  <rect x="35" y="250" width="120" height="70" class="box" fill="#eaf4fb"/>
+  <text x="95" y="280" text-anchor="middle" class="label">Image T2</text>
+  <text x="95" y="303" text-anchor="middle" class="small">RGB</text>
+
+  <rect x="215" y="150" width="170" height="125" class="box" fill="#dcecf7"/>
+  <text x="300" y="195" text-anchor="middle" class="label">Shared</text>
+  <text x="300" y="220" text-anchor="middle" class="label">Swin-Tiny</text>
+  <text x="300" y="248" text-anchor="middle" class="small">S1 / S2 / S3 / S4</text>
+
+  <rect x="445" y="150" width="180" height="125" class="box" fill="#fff2cc"/>
+  <text x="535" y="190" text-anchor="middle" class="label">Explicit S3</text>
+  <text x="535" y="215" text-anchor="middle" class="label">Difference</text>
+  <text x="535" y="242" text-anchor="middle" class="small">features + |diff| + product</text>
+
+  <rect x="685" y="70" width="190" height="115" class="box" fill="#fde9d9"/>
+  <text x="780" y="108" text-anchor="middle" class="label">Edge-Region-</text>
+  <text x="780" y="133" text-anchor="middle" class="label">Semantic Router</text>
+  <text x="780" y="160" text-anchor="middle" class="small">soft spatial gate R</text>
+
+  <rect x="685" y="235" width="190" height="115" class="box" fill="#e4dfec"/>
+  <text x="780" y="274" text-anchor="middle" class="label">Bidirectional</text>
+  <text x="780" y="299" text-anchor="middle" class="label">EAD Interaction</text>
+  <text x="780" y="326" text-anchor="middle" class="small">T1 to T2 and T2 to T1</text>
+
+  <rect x="935" y="150" width="165" height="125" class="box" fill="#e2f0d9"/>
+  <text x="1017" y="193" text-anchor="middle" class="label">Phi Fusion</text>
+  <text x="1017" y="220" text-anchor="middle" class="small">directional discrepancy</text>
+  <text x="1017" y="243" text-anchor="middle" class="small">+ direct evidence</text>
+
+  <rect x="1160" y="150" width="150" height="125" class="box" fill="#d9eaf7"/>
+  <text x="1235" y="193" text-anchor="middle" class="label">Multi-Scale</text>
+  <text x="1235" y="218" text-anchor="middle" class="label">Decoder</text>
+  <text x="1235" y="245" text-anchor="middle" class="small">S2 / S1 skips</text>
+
+  <rect x="1350" y="175" width="70" height="75" class="box" fill="#f4cccc"/>
+  <text x="1385" y="206" text-anchor="middle" class="label">Change</text>
+  <text x="1385" y="230" text-anchor="middle" class="label">Map</text>
+
+  <path d="M155 140 L215 180" class="line"/>
+  <path d="M155 285 L215 245" class="line"/>
+  <path d="M385 212 L445 212" class="line"/>
+  <path d="M625 188 L685 145" class="line"/>
+  <path d="M625 238 L685 275" class="line"/>
+  <path d="M780 185 L780 235" class="line"/>
+  <path d="M875 292 L935 238" class="line"/>
+  <path d="M625 212 C760 390, 900 390, 970 275" class="line"/>
+  <path d="M1100 212 L1160 212" class="line"/>
+  <path d="M1310 212 L1350 212" class="line"/>
+
+  <text x="535" y="310" text-anchor="middle" class="small">S4 context to router</text>
+  <text x="535" y="334" text-anchor="middle" class="small">S1/S2 differences to decoder</text>
+</svg>
